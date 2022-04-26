@@ -108,14 +108,37 @@ def set_service(df):
                 new_df.loc[i, 'SERVICE'] = v
     return new_df
 
-def find_os(dict_of_df = pd.DataFrame(), df = pd.DataFrame(), attribute = None):
-    if(not dict_of_df.empty):
+def find_os(dict_of_df = {}, df = pd.DataFrame(), attribute = None):
+    """
+
+    Parameters
+    ----------
+    dict_of_df : dict, optional
+        dictionnary of DataFrames that contains the needed attribute. Is set 
+        by default to an empty dictionnary to not be considered by the 
+        function. The default is {}
+    df : TYPE, optional
+        DataFrame that contains the needed attribute. Is set by default to an 
+        empty DataFrame to not be considered by the function. The default is 
+        pd.DataFrame()
+    attribute : str, optional
+        Column of the DataFrame to search in. The default is None.
+
+    Returns
+    -------
+    cols : list
+        list of unique values encountered in the attribute column of the final.
+        DataFrame
+
+    """
+    if(len(dict_of_df) == 0):
         bilan = pd.concat(dict_of_df.values())
-    if(not df.empty) : bilan = df
+    if(len(df) == 0) : 
+        bilan = df
     col = bilan[attribute].dropna(axis = 0)
     cols = np.unique(col, return_counts = False)
     cols = [col.strip() for col in cols]
-    cols = list(dict.fromkeys(cols)) #removes duplicates from the givent list
+    cols = list(dict.fromkeys(cols)) #removes duplicates from the given list
     return cols
 
 def stat_services(df):
@@ -346,6 +369,20 @@ def assemble_yearly(dict_of_df, year):
     new_dict = {k: v for (k,v) in dict_of_df.items() if year in k}
     year_concat = pd.concat(new_dict.values(), ignore_index = True)
     return year_concat
+
+def multi_therapies(dict_of_df):
+    year = pd.concat(dict_of_df.values())
+    print(year)
+    duplicates = year[year.duplicated(subset = ['PATIENT'])]
+    #function duplicated only remove one duplicate if there are more than one
+    print(duplicates['PATIENT'])
+    duplicate = {}
+    for i in duplicates['PATIENT']:
+        duplicate[str(i)] = []
+    for k,v in dict_of_df.items():
+        for ke in duplicate.keys():
+            if ke in v['PATIENT'].unique() : duplicate[ke].append(k)
+    return (duplicate, duplicates)
 
 def main(df, dict_of_df, bilan = False):
     """Run main programme routine

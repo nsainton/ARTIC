@@ -55,19 +55,6 @@ dict_of_df = {k:rp.formate(v) for (k,v) in dict_of_df.items() if '2020' in k}
 df = dict_of_df['Sylvie-2020']
 
 #rp.main(df,dict_of_df)
-def multi_therapies(dict_of_df):
-    year = pd.concat(dict_of_df.values())
-    print(year)
-    duplicates = year[year.duplicated(subset = ['PATIENT'])]
-    #function duplicated only remove one duplicate if there are more than one
-    print(duplicates['PATIENT'])
-    duplicate = {}
-    for i in duplicates['PATIENT']:
-        duplicate[str(i)] = []
-    for k,v in dict_of_df.items():
-        for ke in duplicate.keys():
-            if v[v.isin([ke])].size > 0 : duplicate[ke].append(k)
-    return (duplicate, duplicates)
 
 def print_dic(dic):
     for i,j in dic.items():
