@@ -49,7 +49,7 @@ for f in files:
 #Finally, we are going to analyse which service prescripts more consultations
 #for the prendre soin activities
 
-dict_of_df = pd.read_excel('PPS4.xlsx', sheet_name = None)
+dict_of_df = pd.read_excel('~/Documents/Etudes/L3 Philo/S2/ARTIC/PPS4.xlsx', sheet_name = None)
 dict_of_df = {k:rp.formate(v) for (k,v) in dict_of_df.items() if '2020' in k}
 
 df = dict_of_df['Sylvie-2020']
