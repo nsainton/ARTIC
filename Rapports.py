@@ -464,7 +464,7 @@ def plot_multi(dict_of_df, year):
     multi_workshop(duplicate, year)
     return None
 
-def plot_multiple_bars(costs):
+def plot_multiple_bars(costs, method = 'costs'):
     """Plots multiple bars with, associated to one color, the cost for each
         workshop for a given year.
 
@@ -495,14 +495,18 @@ def plot_multiple_bars(costs):
                             color = color[i]))
         labels.append(str(2019 + i))
     plt.xlabel('Ateliers')
-    plt.ylabel('Coûts')
-    plt.title('Dépenses par atelier et par année')
+    if (method == 'costs'):
+        plt.ylabel('Coûts')
+        plt.title('Dépenses par atelier et par année')
+    elif (method == 'attendance'):
+        plt.ylabel('Fréquentation')
+        plt.title('Fréquentation par atelier et par année')
     plt.xticks(ticks = x_axis + (length//2 * width), labels = keys)
-    plt.legend(bars, labels = labels)
+    plt.legend(bars, labels)
     plt.show()
     return None
 
-def cost(dict_of_df):
+def cost(dict_of_df, method = 'costs'):
     """Computes the cost of all workshops by year
 
     Parameters
@@ -522,9 +526,11 @@ def cost(dict_of_df):
     bilan = {k:v for k,v in dict_of_df.items()}
     costs = {'REFLEXOLOGIE' : [], 'OSTHEOPATHIE' : [], 'AURICULOTHERAPIE' : [],\
              'HYPNOSE' : [0,0]}
-    print(bilan.keys())
     for k in bilan.keys() :
-        costs[workshop(k)].append(fees[k.split('-')[0]] * sum(bilan[k].TOTAL))
+        if (method == 'costs'):
+            costs[workshop(k)].append(fees[k.split('-')[0]] * sum(bilan[k].TOTAL))
+        if (method == 'attendance'):
+            costs[workshop(k)].append(sum(bilan[k].TOTAL))
     return costs
 
 def main(df, dict_of_df, bilan = False):
