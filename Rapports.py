@@ -465,6 +465,69 @@ def plot_multi(dict_of_df, year):
     multi_workshop(duplicate, year)
     return None
 
+def plot_multiple_bars(costs):
+    """Plots multiple bars with, associated to one color, the cost for each
+        workshop for a given year.
+
+    Parameters
+    ----------
+    costs : dict
+        Contains the workshops names as keys and the list of costs for all
+        years starting from 2019 as values. This is the output returned by
+        the function cost
+
+    Returns
+    -------
+    None.
+
+    """
+    
+    keys = list(costs)
+    x_axis = np.arange(len(keys))
+    color = ['red','purple','blue','yellow','cyan','green']
+    bars = []
+    width = 0.25
+    labels = []
+    length = len(costs['REFLEXOLOGIE'])
+    plt.figure(figsize = (12,12))
+    for i in range(length) :
+        year = [costs[j][i] for j in costs.keys()]
+        bars.append(plt.bar(x_axis + i*width, year, width = width,\
+                            color = color[i]))
+        labels.append(str(2019 + i))
+    plt.xlabel('Ateliers')
+    plt.ylabel('Coûts')
+    plt.title('Dépenses par atelier et par année')
+    plt.xticks(ticks = x_axis + (length//2 * width), labels = keys)
+    plt.legend(bars, labels = labels)
+    plt.show()
+    return None
+
+def cost(dict_of_df):
+    """Computes the cost of all workshops by year
+
+    Parameters
+    ----------
+    dict_of_df : dict
+        dictionnary of pandas DataFrames that contains all the information
+        about the workshops
+
+    Returns
+    -------
+    costs : dict
+        Contains the workshops names as keys and the list of costs for all
+        years starting from 2019 as values.
+
+    """
+    fees = {'Caroline' : 45, 'Sylvie' : 50, 'Sabine' : 50, 'Magalie' : 50}
+    bilan = {k:v for k,v in dict_of_df.items()}
+    costs = {'REFLEXOLOGIE' : [], 'OSTHEOPATHIE' : [], 'AURICULOTHERAPIE' : [],\
+             'HYPNOSE' : [0,0]}
+    print(bilan.keys())
+    for k in bilan.keys() :
+        costs[workshop(k)].append(fees[k.split('-')[0]] * sum(bilan[k].TOTAL))
+    return costs
+
 def main(df, dict_of_df, bilan = False):
     """Run main programme routine
 
