@@ -370,19 +370,48 @@ def assemble_yearly(dict_of_df, year):
     year_concat = pd.concat(new_dict.values(), ignore_index = True)
     return year_concat
 
+def workshop(therapeute):
+    """
+    
+
+    Parameters
+    ----------
+    therapeute : str
+        String containing the sheet name with the name of the therapeute and
+        the associated year.
+
+    Returns
+    -------
+    str
+        The name of the workshop associated with the provided therapeute .
+
+    """
+    
+    if ('Caroline' in therapeute) :
+        return 'REFLEXOLOGIE'
+    if ('Sylvie' in therapeute) :
+        return 'OSTHEOPATHIE'
+    if ('Sabine' in therapeute) :
+        return 'AURICULOTHERAPIE'
+    if ('Magalie' in therapeute) :
+        return 'HYPNOSE'
+
 def multi_therapies(dict_of_df):
     year = pd.concat(dict_of_df.values())
     print(year)
     duplicates = year[year.duplicated(subset = ['PATIENT'])]
     #function duplicated only remove one duplicate if there are more than one
-    print(duplicates['PATIENT'])
     duplicate = {}
     for i in duplicates['PATIENT']:
         duplicate[str(i)] = []
     for k,v in dict_of_df.items():
         for ke in duplicate.keys():
-            if ke in v['PATIENT'].unique() : duplicate[ke].append(k)
-    return (duplicate, duplicates)
+            if ke in v['PATIENT'].unique() : 
+                duplicate[ke].append(workshop(k))
+    for k in duplicate.keys():
+        duplicate[k] = list(dict.fromkeys(duplicate[k]))
+    return duplicate
+
 
 def main(df, dict_of_df, bilan = False):
     """Run main programme routine
