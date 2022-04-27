@@ -130,9 +130,9 @@ def find_os(dict_of_df = {}, df = pd.DataFrame(), attribute = None):
         DataFrame
 
     """
-    if(len(dict_of_df) == 0):
+    if(len(dict_of_df) > 0):
         bilan = pd.concat(dict_of_df.values())
-    if(len(df) == 0) : 
+    if(len(df) > 0) : 
         bilan = df
     col = bilan[attribute].dropna(axis = 0)
     cols = np.unique(col, return_counts = False)
