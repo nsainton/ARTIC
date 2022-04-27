@@ -72,7 +72,6 @@ def formate(df):
     new_df = new_df[new_df['TOTAL'] > 0]
     columns = list(new_df)
     columns = [i for i in columns if i not in ['TOTAL', 'SERVICE','PATIENT']]
-    print(columns)
     if('ORGANE' in columns):
         columns = [i for i in columns if i not in ['ORGANE', 'SEXE']]
     new_df.drop(columns, axis = 1, inplace = True)
@@ -371,9 +370,8 @@ def assemble_yearly(dict_of_df, year):
     return year_concat
 
 def workshop(therapeute):
-    """
+    """Returns the workshop according to the therapeute name provided
     
-
     Parameters
     ----------
     therapeute : str
@@ -396,10 +394,28 @@ def workshop(therapeute):
     if ('Magalie' in therapeute) :
         return 'HYPNOSE'
 
-def multi_therapies(dict_of_df):
-    year = pd.concat(dict_of_df.values())
-    print(year)
-    duplicates = year[year.duplicated(subset = ['PATIENT'])]
+def multi_therapies(dict_of_df, year = 2019):
+    """Function that gives for each patients that went to multiple therapies
+        at once in one year the therapies they went to.
+
+    Parameters
+    ----------
+    dict_of_df : dict
+        dictionnary of pandas DataFrames containing the different therapies.
+    
+    year : int or str
+        year considered for the study of multi_therapies. The default is 2019
+
+    Returns
+    -------
+    duplicate : dict
+        dictionnary that contains for each patient the therapies they went to
+        if they went to multiple therapies.
+
+    """
+    therapies = {k:v for k,v in dict_of_df.items() if str(year) in k}
+    bilan = pd.concat(therapies.values())
+    duplicates = bilan[bilan.duplicated(subset = ['PATIENT'])]
     #function duplicated only remove one duplicate if there are more than one
     duplicate = {}
     for i in duplicates['PATIENT']:
@@ -410,8 +426,44 @@ def multi_therapies(dict_of_df):
                 duplicate[ke].append(workshop(k))
     for k in duplicate.keys():
         duplicate[k] = list(dict.fromkeys(duplicate[k]))
+        duplicate[k].sort()
     return duplicate
 
+def multi_workshop(duplicates, year = 2019):
+    """Plots in a bar the repartition of patient that went to multiple
+        therapies and gives exact number for the different possible
+        mixing of therapies
+
+    Parameters
+    ----------
+    duplicates : dict
+        Contains info about the patients and the therapies they went to.
+    year : int or str, optional
+        year considered in the function . The default is 2019.
+
+    Returns
+    -------
+    None.
+
+    """
+    workshop = {}
+    for v in duplicates.values():
+        multi = '+\n'.join(v)
+        if multi not in workshop.keys():
+            workshop[multi] = 1
+        else:
+            workshop[multi] += 1
+    plt.figure(figsize = (17,15))
+    plt.bar(list(workshop.keys()),list(workshop.values()), width = 0.5, \
+            color = 'purple')
+    plt.title('Nombre de thérapies jointes pour l\'année {}'.format(year) )
+    plt.show()
+    return None
+
+def plot_multi(dict_of_df, year):
+    duplicate = multi_therapies(dict_of_df, year)
+    multi_workshop(duplicate, year)
+    return None
 
 def main(df, dict_of_df, bilan = False):
     """Run main programme routine
