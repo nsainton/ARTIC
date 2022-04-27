@@ -167,13 +167,13 @@ def stat_services(df):
         organs[organ] = new_df[new_df['ORGANE'] == organ].size
     services = list(prescriptions.values())
     organ = list(organs.values())
-    plt.figure(figsize = (15,15))
+    plt.figure(figsize = (20,20))
     plt.pie(services, labels = SERVICES, normalize = True, shadow = True,\
             autopct = lambda x : str(round(x,2)) + '%')
     plt.legend(loc = 'lower right')
     plt.title('Pourcentage de pass prescrits par service', y = -0.01)
     plt.show()
-    plt.figure(figsize = (15,15))
+    plt.figure(figsize = (35,35))
     plt.pie(organ, labels = ORGANS, normalize = True, shadow = True,\
             autopct = lambda x : str(round(x,2)) + '%')
     plt.legend(loc = 'lower right')
@@ -249,7 +249,6 @@ def stat_genre(df):
            their genre
     """
     men = df[df['SEXE'] == 'H']
-    print(men.head())
     women = df[df['SEXE'] == 'F']
     men = stat_comebacks(men, graphic = False)
     women = stat_comebacks(women, graphic = False)
@@ -544,4 +543,3 @@ def main(df, dict_of_df, bilan = False):
         bilan = pd.concat(dict_of_df.values())
         patients_count(bilan)
         stat_comebacks(bilan)
-
