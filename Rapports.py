@@ -140,14 +140,22 @@ def find_os(dict_of_df = {}, df = pd.DataFrame(), attribute = None):
     cols = list(dict.fromkeys(cols)) #removes duplicates from the given list
     return cols
 
-def stat_services(df):
+def stat_services(dict_of_df, year = 0, therapeute = ''):
     """Displays the proportion of patient that came prescripted by each service
        and for each organe already registered in the database
        
        Parameters
        ----------
-       df : pandas DataFrame
-           Contains the information for one workshop in one year
+       dict_of_df : dict
+           Contains the dictionnary of pandas DataFrames that contain the
+           information we are going to search for
+       year : int or string (optional)
+           year formated as aaaa that will be used to select the DataFrames
+           to search the infos in
+       therapeute : string (optional)
+           therapeute first name that will be used to select the DataFrames
+           to search the infos in
+           
         
        Display
        -------
@@ -155,6 +163,7 @@ def stat_services(df):
        patients that came from each service and the second one shows the
        proportion of patients that came for each organ
     """
+    df = assemble(dict_of_df, year, therapeute)
     new_df = set_service(df)
     new_df.dropna(subset = ['SERVICE', 'ORGANE'], inplace = True)
     prescriptions = {}
@@ -344,7 +353,7 @@ def get_data(dict_of_df):
             '+4rdv' : more_four, 'nom' : number}
     return datas
 
-def assemble_yearly(dict_of_df, year):
+def assemble(dict_of_df, year = 0, therapeute = ''):
     """Will concatenate different DataFrames to get more general data about
         the workshops
         
@@ -353,20 +362,29 @@ def assemble_yearly(dict_of_df, year):
         dict_of_df : dictionnary
             dictionnary that contains the pandas DataFrames needed to be
             concatenated
-        year : int or string
+        year : int or string (optional)
             year formated as aaaa that will be used to select the right
             DataFrames to concatenate
+        therapeute : string (optional)
+            therapeute first name that will be used to select the right
+            DataFrames to concatenate
+            
         
         Returns
         -------
-        year_concat : pandas DataFrame
+        concat : pandas DataFrame
             DataFrame that contains the concatenation of all the DataFrames
             selected
     """
-    year = str(year)
-    new_dict = {k: v for (k,v) in dict_of_df.items() if year in k}
-    year_concat = pd.concat(new_dict.values(), ignore_index = True)
-    return year_concat
+    if(year):
+        year = str(year)
+        new_dict = {k: v for (k,v) in dict_of_df.items() if year in k}
+        if(therapeute):
+            new_dict = {k: v for (k,v) in new_dict.items() if therapeute in k}
+    elif(therapeute):
+        new_dict = {k: v for (k,v) in dict_of_df.items() if therapeute in k}
+    concat = pd.concat(new_dict.values(), ignore_index = True)
+    return concat
 
 def workshop(therapeute):
     """Returns the workshop according to the therapeute name provided
