@@ -247,7 +247,7 @@ def stat_comebacks(df, low = 0, middle = 1, high = 4, graphic = True):
     else:
         return (n_low-n_middle, n_middle-n_high, n_high)
 
-def stat_genre(df):
+def stat_genre(dict_of_df, year = 0, therapeute = ''):
     """Function that gives the percentage of men and women that attended
        a given workshop
        
@@ -256,13 +256,20 @@ def stat_genre(df):
        df : pandas DataFrame
            Contains the information about the patients and more specifically
            their genre
+       year : int or string (optional)
+           year formated as aaaa that will be used to select the DataFrames
+           to search the infos in
+       therapeute : string (optional)
+           therapeute first name that will be used to select the DataFrames
+           to search the infos in
     """
+    df = assemble(dict_of_df, year, therapeute)
     men = df[df['SEXE'] == 'H']
     women = df[df['SEXE'] == 'F']
     men = stat_comebacks(men, graphic = False)
     women = stat_comebacks(women, graphic = False)
     once = (sum(men),sum(women))
-    plt.figure(figsize = (12,10))
+    plt.figure(figsize = (12,12))
     plt.pie(once, labels = ['hommes','femmes'], normalize = True,\
             shadow = True, autopct = lambda x : str(round(x,2)) + '%',\
             colors = ['blue','red'])
