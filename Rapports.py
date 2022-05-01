@@ -419,7 +419,7 @@ def multi_therapies(dict_of_df, year = 2019):
     duplicate = {}
     for i in duplicates['PATIENT']:
         duplicate[str(i)] = []
-    for k,v in dict_of_df.items():
+    for k,v in therapies.items():
         for ke in duplicate.keys():
             if ke in v['PATIENT'].unique() : 
                 duplicate[ke].append(workshop(k))
@@ -459,7 +459,7 @@ def multi_workshop(duplicates, year = 2019):
     plt.show()
     return None
 
-def plot_multi(dict_of_df, year):
+def plot_multi(dict_of_df, year = 2019):
     duplicate = multi_therapies(dict_of_df, year)
     multi_workshop(duplicate, year)
     return None
@@ -506,8 +506,8 @@ def plot_multiple_bars(costs, method = 'costs'):
     plt.show()
     return None
 
-def cost(dict_of_df, method = 'costs'):
-    """Computes the cost of all workshops by year
+def computing(dict_of_df, method = 'costs'):
+    """Computes the cost or the frequentation of all workshops by year
 
     Parameters
     ----------
