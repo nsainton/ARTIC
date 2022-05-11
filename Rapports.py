@@ -142,7 +142,7 @@ def find_os(dict_of_df = {}, df = pd.DataFrame(), attribute = None):
 
 def stat_services(dict_of_df, year = 0, therapeute = ''):
     """Displays the proportion of patient that came prescripted by each service
-       and for each organe already registered in the database
+       and for each organ already registered in the database
        
        Parameters
        ----------
@@ -253,9 +253,9 @@ def stat_genre(dict_of_df, year = 0, therapeute = ''):
        
        Parameters
        ----------
-       df : pandas DataFrame
-           Contains the information about the patients and more specifically
-           their genre
+       dict_of_df : dictionnary
+           dictionnary that contains the pandas DataFrames needed to be
+           concatenated
        year : int or string (optional)
            year formated as aaaa that will be used to select the DataFrames
            to search the infos in
@@ -278,15 +278,21 @@ def stat_genre(dict_of_df, year = 0, therapeute = ''):
     plt.show()
     return None
 
-def patients_count(df, graphic = True):
+def patients_count(dict_of_df, year = 0, therapeute = '', graphic = True):
     """Prints the statistic of one DataFrame and eventually returns the 
         number of meetings for one workshop
         
         Parameters
         ----------
-        df : pandas DataFrame
-            DataFrame that contains the relevant informations about the
-            patients
+        dict_of_df : dictionnary
+            dictionnary that contains the pandas DataFrames needed to be
+            concatenated
+        year : int or string (optional)
+            year formated as aaaa that will be used to select the right
+            DataFrames to concatenate
+        therapeute : string (optional)
+            therapeute first name that will be used to select the right
+            DataFrames to concatenate
         graphic : boolean (optionnal)
             if graphic = True (default value), then the statistics and the
             total number of meetings for a workshop is displayed and nothing
@@ -298,6 +304,7 @@ def patients_count(df, graphic = True):
         number_of_meeting : int (optionnal)
             total number of meetings for one workshop and a year
     """
+    df = assemble(dict_of_df, year, therapeute)
     patients_count = df['TOTAL']
     statistics = patients_count.describe()
     number_of_meetings = sum(patients_count)
@@ -383,6 +390,7 @@ def assemble(dict_of_df, year = 0, therapeute = ''):
             DataFrame that contains the concatenation of all the DataFrames
             selected
     """
+    new_dict = dict_of_df
     if(year):
         year = str(year)
         new_dict = {k: v for (k,v) in dict_of_df.items() if year in k}
